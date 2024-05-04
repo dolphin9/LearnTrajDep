@@ -251,7 +251,8 @@ def test(train_loader, model, input_n=20, output_n=50, dct_n=20, is_cuda=False, 
 
         # inverse dct transformation
         _, idct_m = data_utils.get_dct_matrix(seq_len)
-        idct_m = Variable(torch.from_numpy(idct_m)).float().cuda()
+        idct_m = Variable(torch.from_numpy(idct_m)).float()
+        #idct_m = Variable(torch.from_numpy(idct_m)).float().cuda()
         outputs_t = outputs.view(-1, dct_n).transpose(0, 1)
         outputs_exp = torch.matmul(idct_m[:, :dct_n], outputs_t).transpose(0, 1).contiguous().view(-1, dim_used_len,
                                                                                                    seq_len).transpose(1,
@@ -281,10 +282,10 @@ def test(train_loader, model, input_n=20, output_n=50, dct_n=20, is_cuda=False, 
         # update loss and testing errors
         for k in np.arange(0, len(eval_frame)):
             j = eval_frame[k]
-            t_e[k] += torch.mean(torch.norm(pred_eul[:, j, :] - targ_eul[:, j, :], 2, 1)).cpu().data.numpy()[0] * n
+            t_e[k] += torch.mean(torch.norm(pred_eul[:, j, :] - targ_eul[:, j, :], 2, 1)).cpu().data.numpy() * n
             t_3d[k] += torch.mean(torch.norm(
                 targ_p3d[:, j, :, :].contiguous().view(-1, 3) - pred_p3d[:, j, :, :].contiguous().view(-1, 3), 2,
-                1)).cpu().data.numpy()[0] * n
+                1)).cpu().data.numpy() * n
         # t_l += loss.cpu().data.numpy()[0] * n
         N += n
 
@@ -323,8 +324,8 @@ def val(train_loader, model, input_n=20, dct_n=20, is_cuda=False, dim_used=[]):
         e_err = loss_funcs.euler_error(outputs, all_seq, input_n, dim_used, dct_n)
 
         # t_l.update(loss.cpu().data.numpy()[0] * n, n)
-        t_e.update(e_err.cpu().data.numpy()[0] * n, n)
-        t_3d.update(m_err.cpu().data.numpy()[0] * n, n)
+        t_e.update(e_err.cpu().data.numpy() * n, n)
+        t_3d.update(m_err.cpu().data.numpy() * n, n)
 
         bar.suffix = '{}/{}|batch time {:.4f}s|total time{:.2f}s'.format(i + 1, len(train_loader), time.time() - bt,
                                                                          time.time() - st)
