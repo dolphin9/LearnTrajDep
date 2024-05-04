@@ -36,7 +36,7 @@ def main(opt):
                         num_stage=opt.num_stage, node_n=48)
     if is_cuda:
         model.cuda()
-    model_path_len = './checkpoint/pretrained/h36m_in10_out25.pth.tar'
+    model_path_len = './checkpoint/pretrained/h36m_in10_out10_dctn20.pth.tar'
     print(">>> loading ckpt len from '{}'".format(model_path_len))
     if is_cuda:
         ckpt = torch.load(model_path_len)
@@ -80,7 +80,10 @@ def main(opt):
             dim_used_len = len(dim_used)
 
             _, idct_m = data_utils.get_dct_matrix(seq_len)
-            idct_m = Variable(torch.from_numpy(idct_m)).float().cuda()
+            if not is_cuda:
+                idct_m = Variable(torch.from_numpy(idct_m)).float()
+            else:
+                idct_m = Variable(torch.from_numpy(idct_m)).float().cuda()
             outputs_t = outputs.view(-1, seq_len).transpose(0, 1)
             outputs_exp = torch.matmul(idct_m, outputs_t).transpose(0, 1).contiguous().view(-1, dim_used_len,
                                                                                             seq_len).transpose(1, 2)
