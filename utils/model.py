@@ -34,10 +34,10 @@ class GraphConvolution(nn.Module):
             self.bias.data.uniform_(-stdv, stdv)
 
     def forward(self, input):
-        support = torch.matmul(input, self.weight)
-        output = torch.matmul(self.att, support)
+        support = torch.matmul(input.float(), self.weight.data)
+        output = torch.matmul(self.att.data, support)
         if self.bias is not None:
-            return output + self.bias
+            return output + self.bias.data
         else:
             return output
 
@@ -124,6 +124,6 @@ class GCN(nn.Module):
             y = self.gcbs[i](y)
 
         y = self.gc7(y)
-        y = y + x
+        y = y + x.float()
 
         return y
