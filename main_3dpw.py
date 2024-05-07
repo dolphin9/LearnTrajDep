@@ -189,8 +189,8 @@ def train(train_loader, model, optimizer, input_n=10, dct_n=20, dim_used=[], lr_
         n, seq_len, _ = all_seq.data.shape
         # update the training loss
         e_err = loss_funcs.euler_error(outputs, all_seq, input_n, dim_used, dct_n)
-        sen_l.update(loss.cpu().data.numpy()[0] * n * seq_len, n * seq_len)
-        eul_err.update(e_err.cpu().data.numpy()[0] * n * seq_len, n * seq_len)
+        sen_l.update(loss.cpu().data.numpy() * n * seq_len, n * seq_len)
+        eul_err.update(e_err.cpu().data.numpy() * n * seq_len, n * seq_len)
 
         bar.suffix = '{}/{}|batch time {:.4f}s|total time{:.2f}s'.format(i, len(train_loader), time.time() - bt,
                                                                          time.time() - st)
@@ -226,7 +226,10 @@ def test(train_loader, model, input_n=20, dct_n=20, dim_used=[], output_n=50, is
         n, seq_len, dim_full_len = all_seq.data.shape
 
         _, idct_m = data_utils.get_dct_matrix(seq_len)
-        idct_m = Variable(torch.from_numpy(idct_m)).float().cuda()
+        if is_cuda:
+            idct_m = Variable(torch.from_numpy(idct_m)).float().cuda()
+        else:
+            idct_m = Variable(torch.from_numpy(idct_m)).float()
         outputs_t = outputs.view(-1, dct_n).transpose(0, 1)
         outputs_exp = torch.matmul(idct_m[:, :dct_n], outputs_t).transpose(0, 1).contiguous().view(-1, dim_full_len - 3,
                                                                                                    seq_len).transpose(1,
@@ -238,8 +241,7 @@ def test(train_loader, model, input_n=20, dct_n=20, dim_used=[], output_n=50, is
 
         for k in np.arange(0, len(eval_frame)):
             j = eval_frame[k]
-            t_err[k] += torch.mean(torch.norm(targ_exp[:, j, :] - pred_exp[:, j, :], p=2, dim=1)).cpu().data.numpy()[
-                            0] * n
+            t_err[k] += torch.mean(torch.norm(targ_exp[:, j, :] - pred_exp[:, j, :], p=2, dim=1)).cpu().data.numpy() * n
 
         # update the training loss
         N += n
@@ -273,7 +275,7 @@ def val(train_loader, model, input_n=10, dct_n=20, dim_used=[], is_cuda=False):
 
         n, seq_len, _ = all_seq.data.shape
         # update the training loss
-        t_err.update(e_err.cpu().data.numpy()[0] * n * seq_len, n * seq_len)
+        t_err.update(e_err.cpu().data.numpy() * n * seq_len, n * seq_len)
 
         bar.suffix = '{}/{}|batch time {:.4f}s|total time{:.2f}s'.format(i, len(train_loader), time.time() - bt,
                                                                          time.time() - st)

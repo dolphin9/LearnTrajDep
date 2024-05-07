@@ -42,9 +42,11 @@ class Pose3dPW(Dataset):
             self.data_path = path_to_data + '/validation/'
         all_seqs = []
         files = []
-
+        print(f'{self.data_path} is exist? :{os.path.exists(self.data_path)}')
         for (dirpath, dirnames, filenames) in walk(self.data_path):
             files.extend(filenames)
+
+        print(files)
         for f in files:
             with open(self.data_path + f, 'rb') as f:
                 print("load data from {}".format(f.name))
@@ -65,7 +67,8 @@ class Pose3dPW(Dataset):
                     else:
                         all_seqs = np.concatenate((all_seqs, seq_sel), axis=0)
             # break
-
+        print(type(all_seqs))
+        print(len(all_seqs))
         self.all_seqs = all_seqs[:, (their_input_n - input_n):, :]
 
         # first 3 values are global rotation
