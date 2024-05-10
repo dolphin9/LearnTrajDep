@@ -177,6 +177,8 @@ def train(train_loader, model, optimizer, input_n=10, dct_n=20, dim_used=[], lr_
             inputs = Variable(inputs).float()
             # targets = Variable(targets).float()
             all_seq = Variable(all_seq).float()
+
+        #breakpoint()
         outputs = model(inputs)
         loss = loss_funcs.sen_loss(outputs, all_seq, dim_used, dct_n)
 
