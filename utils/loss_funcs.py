@@ -13,7 +13,7 @@ def sen_loss(outputs, all_seq, dim_used, dct_n):
     :param dim_used:
     :return:
     """
-    n, seq_len, dim_full_len = all_seq.data.shape
+    n, seq_len, dim_full_len = all_seq.shape
     dim_used_len = len(dim_used)
     dim_used = np.array(dim_used)
 
@@ -21,7 +21,7 @@ def sen_loss(outputs, all_seq, dim_used, dct_n):
     idct_m = Variable(torch.from_numpy(idct_m)).float()
     #idct_m = Variable(torch.from_numpy(idct_m)).float().cuda()
     outputs_t = outputs.view(-1, dct_n).transpose(0, 1)
-    pred_expmap = torch.matmul(idct_m[:, :dct_n], outputs_t).transpose(0, 1).contiguous().view(-1, dim_used_len,
+    pred_expmap = torch.matmul(idct_m[:, :dct_n].cuda(), outputs_t).transpose(0, 1).contiguous().view(-1, dim_used_len,
                                                                                                seq_len).transpose(1, 2)
     targ_expmap = all_seq.clone()[:, :, dim_used]
 
@@ -38,14 +38,14 @@ def euler_error(outputs, all_seq, input_n, dim_used, dct_n):
     :param dim_used:
     :return:
     """
-    n, seq_len, dim_full_len = all_seq.data.shape
+    n, seq_len, dim_full_len = all_seq.shape
     dim_used_len = len(dim_used)
 
     _, idct_m = data_utils.get_dct_matrix(seq_len)
     idct_m = Variable(torch.from_numpy(idct_m)).float()
     #idct_m = Variable(torch.from_numpy(idct_m)).float().cuda()
     outputs_t = outputs.view(-1, dct_n).transpose(0, 1)
-    outputs_exp = torch.matmul(idct_m[:, :dct_n], outputs_t).transpose(0, 1).contiguous().view(-1, dim_used_len,
+    outputs_exp = torch.matmul(idct_m[:, :dct_n].cuda(), outputs_t).transpose(0, 1).contiguous().view(-1, dim_used_len,
                                                                                                seq_len).transpose(1, 2)
     pred_expmap = all_seq.clone()
     dim_used = np.array(dim_used)
@@ -80,14 +80,14 @@ def mpjpe_error(outputs, all_seq, input_n, dim_used, dct_n):
     :param data_std:
     :return:
     """
-    n, seq_len, dim_full_len = all_seq.data.shape
+    n, seq_len, dim_full_len = all_seq.shape
     dim_used_len = len(dim_used)
 
     _, idct_m = data_utils.get_dct_matrix(seq_len)
     idct_m = Variable(torch.from_numpy(idct_m)).float()
     #idct_m = Variable(torch.from_numpy(idct_m)).float().cuda()
     outputs_t = outputs.view(-1, dct_n).transpose(0, 1)
-    outputs_exp = torch.matmul(idct_m[:, :dct_n], outputs_t).transpose(0, 1).contiguous().view(-1, dim_used_len,
+    outputs_exp = torch.matmul(idct_m[:, :dct_n].cuda(), outputs_t).transpose(0, 1).contiguous().view(-1, dim_used_len,
                                                                                                seq_len).transpose(1, 2)
     pred_expmap = all_seq.clone()
     dim_used = np.array(dim_used)
@@ -108,14 +108,14 @@ def mpjpe_error(outputs, all_seq, input_n, dim_used, dct_n):
 
 
 def mpjpe_error_cmu(outputs, all_seq, input_n, dim_used, dct_n):
-    n, seq_len, dim_full_len = all_seq.data.shape
+    n, seq_len, dim_full_len = all_seq.shape
     dim_used_len = len(dim_used)
 
     _, idct_m = data_utils.get_dct_matrix(seq_len)
     idct_m = Variable(torch.from_numpy(idct_m)).float()
     #idct_m = Variable(torch.from_numpy(idct_m)).float().cuda()
     outputs_t = outputs.view(-1, dct_n).transpose(0, 1)
-    outputs_exp = torch.matmul(idct_m[:, :dct_n], outputs_t).transpose(0, 1).contiguous().view(-1, dim_used_len,
+    outputs_exp = torch.matmul(idct_m[:, :dct_n].cuda(), outputs_t).transpose(0, 1).contiguous().view(-1, dim_used_len,
                                                                                                seq_len).transpose(1, 2)
     pred_expmap = all_seq.clone()
     dim_used = np.array(dim_used)
@@ -142,7 +142,7 @@ def mpjpe_error_p3d(outputs, all_seq, dct_n, dim_used):
     :param dim_used:
     :return:
     """
-    n, seq_len, dim_full_len = all_seq.data.shape
+    n, seq_len, dim_full_len = all_seq.shape
     dim_used = np.array(dim_used)
     dim_used_len = len(dim_used)
 
@@ -162,7 +162,7 @@ def mpjpe_error_p3d(outputs, all_seq, dct_n, dim_used):
 
 
 def mpjpe_error_3dpw(outputs, all_seq, dct_n, dim_used):
-    n, seq_len, dim_full_len = all_seq.data.shape
+    n, seq_len, dim_full_len = all_seq.shape
 
     _, idct_m = data_utils.get_dct_matrix(seq_len)
     idct_m = Variable(torch.from_numpy(idct_m)).float()
