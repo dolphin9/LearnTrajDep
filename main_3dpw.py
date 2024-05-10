@@ -172,7 +172,7 @@ def train(train_loader, model, optimizer, input_n=10, dct_n=20, dim_used=[], lr_
         if is_cuda:
             inputs = Variable(inputs.cuda()).float()
             # targets = Variable(targets.cuda(async=True)).float()
-            all_seq = Variable(all_seq.cuda(async=True)).float()
+            all_seq = Variable(all_seq.cuda(non_blocking=True)).float()
         else:
             inputs = Variable(inputs).float()
             # targets = Variable(targets).float()
@@ -216,7 +216,7 @@ def test(train_loader, model, input_n=20, dct_n=20, dim_used=[], output_n=50, is
         if is_cuda:
             inputs = Variable(inputs.cuda()).float()
             # targets = Variable(targets.cuda(async=True)).float()
-            all_seq = Variable(all_seq.cuda(async=True)).float()
+            all_seq = Variable(all_seq.cuda(non_blocking=True)).float()
         else:
             inputs = Variable(inputs).float()
             # targets = Variable(targets).float()
@@ -265,7 +265,7 @@ def val(train_loader, model, input_n=10, dct_n=20, dim_used=[], is_cuda=False):
         if is_cuda:
             inputs = Variable(inputs.cuda()).float()
             # targets = Variable(targets.cuda(async=True)).float()
-            all_seq = Variable(all_seq.cuda(async=True)).float()
+            all_seq = Variable(all_seq.cuda(non_blocking=True)).float()
         else:
             inputs = Variable(inputs).float()
             # targets = Variable(targets).float()
